@@ -47,5 +47,3 @@ public:
     std::string toString() const;
 };
 #endif // SET_H
-
-#endif // SET_H
