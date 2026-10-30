@@ -3,6 +3,7 @@
 #include "Vector3D.h"
 #include "Set.h"
 
+// Execution module for 3D Vector mathematical validation (Variant 1.1)
 void runVectorModule() {
     double x1, y1, z1, x2, y2, z2, factor;
 
@@ -10,6 +11,7 @@ void runVectorModule() {
     std::cout << "         3D VECTOR TESTING MODULE        " << std::endl;
     std::cout << "=========================================" << std::endl;
 
+    // Collecting raw parameters from standard console runtime inputs
     std::cout << "--- Enter Coordinates for Vector 1 ---" << std::endl;
     std::cout << "Enter X1: "; std::cin >> x1;
     std::cout << "Enter Y1: "; std::cin >> y1;
@@ -23,18 +25,18 @@ void runVectorModule() {
     std::cout << "\n--- Enter a Scaling Factor (Number) ---" << std::endl;
     std::cout << "Enter Number: "; std::cin >> factor;
 
-    // Constructing objects
+    // Dynamic instantiation of custom mathematical structures
     Vector3D v1(x1, y1, z1);
     Vector3D v2(x2, y2, z2);
 
-    // Processing operations
+    // Dispatching calculations through overloaded operator surcharges
     Vector3D addResult = v1 + v2;
     Vector3D subResult = v1 - v2;
     Vector3D crossResult = v1 * v2;
     Vector3D mulScalarResult = v1 * factor;
     Vector3D divScalarResult = v1 / factor;
 
-    // Output results
+    // Printing processing data safely via encapsulated Getters
     std::cout << "\n-----------------------------------------" << std::endl;
     std::cout << "            VECTOR RESULTS               " << std::endl;
     std::cout << "-----------------------------------------" << std::endl;
@@ -55,6 +57,7 @@ void runVectorModule() {
     std::cout << "Is V1 < V2 ? : " << (v1 < v2 ? "TRUE" : "FALSE") << std::endl;
 }
 
+// Execution module for Unordered Cantor Set theory validation (Variant 1.4 / 1.4.1)
 void runSetModule() {
     std::string input1, input2;
 
@@ -63,21 +66,20 @@ void runSetModule() {
     std::cout << "=========================================" << std::endl;
     std::cout << "Example of valid input format: {a, b, {c, d}, {}}" << std::endl;
 
-    std::cin.ignore(); // Clean buffer
+    std::cin.ignore(); // Flushing buffer stream
     std::cout << "Enter Set 1: "; std::getline(std::cin, input1);
     std::cout << "Enter Set 2: "; std::getline(std::cin, input2);
 
-    // Triggering Task 1.4.1 static string parser
+    // Triggering structural parsing from user literal console string token sequences
     Set s1 = Set::fromString(input1);
     Set s2 = Set::fromString(input2);
 
-    // Processing Cantor set operations
+    // Executing standard Cantor Set algebra via surcharges
     Set unionSet = s1 + s2;
     Set intersectSet = s1 * s2;
     Set diffSet = s1 - s2;
     Set powerSet1 = s1.powerSet();
-
-    // Output results
+    // Direct terminal output render step
     std::cout << "\n-----------------------------------------" << std::endl;
     std::cout << "              SET RESULTS                " << std::endl;
     std::cout << "-----------------------------------------" << std::endl;
@@ -93,6 +95,7 @@ void runSetModule() {
     std::cout << "Power Set of Set 1           : " << powerSet1.toString() << std::endl;
 }
 
+// Main execution gateway / Central control loop
 int main() {
     int choice = 0;
 

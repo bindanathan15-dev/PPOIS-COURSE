@@ -361,3 +361,7 @@ MigrationBackup/
 
 # Fody - auto-generated XML schema
 FodyWeavers.xsd
+# Executable and compiled files
+*.exe
+*.obj
+*.pdb

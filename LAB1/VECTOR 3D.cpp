@@ -1,22 +1,23 @@
 #include "Vector3D.h"
-#include <cmath> 
+#include <cmath> // Required for std::sqrt (square root calculations)
 
-// Constructeurs
+// Default Constructor initializing components to zero
 Vector3D::Vector3D() : x(0), y(0), z(0) {}
 
+// Parameterized Constructor mapping inputs to private members
 Vector3D::Vector3D(double val_x, double val_y, double val_z) : x(val_x), y(val_y), z(val_z) {}
 
-// Getters
+// Secure Getters implementations
 double Vector3D::getx() const { return x; }
 double Vector3D::gety() const { return y; }
 double Vector3D::getz() const { return z; }
 
-// Longueur
+// Calculates the spatial length of the vector using Pythagoras theorem
 double Vector3D::length() const {
     return std::sqrt(x * x + y * y + z * z);
 }
 
-// Op?ration 1 : Addition
+// Vector Addition Surcharge Implementation
 Vector3D Vector3D::operator+(const Vector3D& other) const {
     return Vector3D(x + other.x, y + other.y, z + other.z);
 }
@@ -25,7 +26,7 @@ Vector3D& Vector3D::operator+=(const Vector3D& other) {
     return *this;
 }
 
-// Op?ration 2 : Soustraction
+// Vector Subtraction Surcharge Implementation
 Vector3D Vector3D::operator-(const Vector3D& other) const {
     return Vector3D(x - other.x, y - other.y, z - other.z);
 }
@@ -34,7 +35,7 @@ Vector3D& Vector3D::operator-=(const Vector3D& other) {
     return *this;
 }
 
-// Op?ration 3 : Produit Vectoriel (Cross Product)
+// 3D Cross Product Surcharge Implementation
 Vector3D Vector3D::operator*(const Vector3D& other) const {
     return Vector3D(
         y * other.z - z * other.y,
@@ -43,11 +44,11 @@ Vector3D Vector3D::operator*(const Vector3D& other) const {
     );
 }
 Vector3D& Vector3D::operator*=(const Vector3D& other) {
-    *this = *this * other;
+    *this = *this * other; // Reusing the binary multiplication operator
     return *this;
 }
 
-// Op?ration 4 : Multiplication par un nombre
+// Scalar Multiplication Surcharge Implementation
 Vector3D Vector3D::operator*(double scalar) const {
     return Vector3D(x * scalar, y * scalar, z * scalar);
 }
@@ -56,7 +57,7 @@ Vector3D& Vector3D::operator*=(double scalar) {
     return *this;
 }
 
-// Op?ration 5 : Division par un nombre
+// Scalar Division Surcharge Implementation
 Vector3D Vector3D::operator/(double scalar) const {
     return Vector3D(x / scalar, y / scalar, z / scalar);
 }
@@ -65,16 +66,16 @@ Vector3D& Vector3D::operator/=(double scalar) {
     return *this;
 }
 
-// Op?ration 6 : Cosinus de l'angle entre deux vecteurs
+// Computes the directional angle cosine between two vectors using Dot Product formula
 double Vector3D::cosineWith(const Vector3D& other) const {
     double lenProduct = this->length() * other.length();
-    if (lenProduct == 0) return 0; // S?curit? anti-division par z?ro
-    // Produit scalaire divis? par le produit des longueurs
+    if (lenProduct == 0) return 0; // Anti-crash safety check for zero division
+
     double dotProduct = x * other.x + y * other.y + z * other.z;
     return dotProduct / lenProduct;
 }
 
-// Op?ration 7 : Comparaisons de longueurs
+// Relational Comparison Surcharge Implementations based on Vector magnitude
 bool Vector3D::operator>(const Vector3D& other) const { return this->length() > other.length(); }
 bool Vector3D::operator>=(const Vector3D& other) const { return this->length() >= other.length(); }
 bool Vector3D::operator<(const Vector3D& other) const { return this->length() < other.length(); }
