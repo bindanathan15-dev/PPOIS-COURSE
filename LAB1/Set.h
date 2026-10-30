@@ -1,56 +1,50 @@
-#ifndef VECTOR3D_H
-#define VECTOR3D_H
+#ifndef SET_H
+#define SET_H
 
+#include <string>
+#include <vector>
 #include <iostream>
 
-/// @brief Class representing a 3-dimensional vector for mathematical operations.
-class Vector3D {
+// Class representing an Unordered Cantor Set that can contain atoms or nested subsets
+class Set {
 private:
-    double x; ///< Encapsulated X coordinate
-    double y; ///< Encapsulated Y coordinate
-    double z; ///< Encapsulated Z coordinate
+    bool isSubSet;                 // Flag: true if this element is a subset, false if it's a simple atom
+    std::string atom;              // Stores the string value if this element is a single atom (e.g., "a")
+    std::vector<Set> elements;     // Recursive internal storage for nested set items
+
+    // Internal engine function to automatically remove duplicate items
+    void removeDuplicates();
 
 public:
-    // Constructors and Resource Management (Rule of Three)
-    Vector3D();
-    Vector3D(double val_x, double val_y, double val_z);
-    Vector3D(const Vector3D& other); // Copy constructor
-    Vector3D& operator=(const Vector3D& other); // Copy assignment operator
-    ~Vector3D() = default;
+    // Constructors
+    Set();                         // Default constructor creating an empty set: {}
+    Set(std::string singleAtom);   // Parameterized constructor creating a basic atom element
 
-    // Secure Getters for reading private coordinates
-    double getx() const;
-    double gety() const;
-    double getz() const;
+    // Core operations
+    bool isEmpty() const;          // Verifies if the current set is empty
+    int cardinality() const;       // Determines the number of unique elements (size)
+    void addElement(const Set& element);    // Securely adds an element (prevents duplicates)
+    void removeElement(const Set& element); // Removes a specific element from the set
 
-    // Geometric calculations
-    double length() const;
-    double cosineWith(const Vector3D& other) const;
+    // Overloaded bracket indexing operator for membership verification (True/False)
+    bool operator[](const Set& element) const;
 
-    // Operator Overloading for Vector Arithmetic
-    Vector3D operator+(const Vector3D& other) const;
-    Vector3D& operator+=(const Vector3D& other);
-    Vector3D operator-(const Vector3D& other) const;
-    Vector3D& operator-=(const Vector3D& other);
-    Vector3D operator*(const Vector3D& other) const; // Cross Product multiplication
-    Vector3D& operator*=(const Vector3D& other);
+    // Set theory algebraic operations (Union +, Intersection *, Difference -)
+    Set operator+(const Set& other) const;  // Union operation
+    Set& operator+=(const Set& other);
 
-    // Operator Overloading for Scalar Math
-    Vector3D operator*(double scalar) const;
-    Vector3D& operator*=(double scalar);
-    Vector3D operator/(double scalar) const;
-    Vector3D& operator/=(double scalar);
+    Set operator*(const Set& other) const;  // Intersection operation
+    Set& operator*=(const Set& other);
 
-    // Relational and Equality Operators
-    bool operator>(const Vector3D& other) const;
-    bool operator>=(const Vector3D& other) const;
-    bool operator<(const Vector3D& other) const; // <-- PARFAITEMENT CORRIGE ICI
-    bool operator<=(const Vector3D& other) const;
-    bool operator==(const Vector3D& other) const; // Equality check requirement
+    Set operator-(const Set& other) const;  // Difference operation
+    Set& operator-=(const Set& other);
 
-    // Text stream operations (Reading/Writing requirement)
-    friend std::ostream& operator<<(std::ostream& os, const Vector3D& vector);
-    friend std::istream& operator>>(std::istream& is, Vector3D& vector);
+    // Advanced capabilities required by BSUIR
+    Set powerSet() const;          // Generates the combinatorial Power Set (all possible subsets)
+    static Set fromString(const std::string& str); // Recursive terminal string format parser
+
+    // Formatting string output for console display
+    std::string toString() const;
 };
 
-#endif // VECTOR3D_H
+#endif // SET_H
