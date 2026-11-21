@@ -11,12 +11,11 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
-
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-     - name: Compile Vector3D and Set
+      - name: Compile Vector3D and Set
         run: |
           cd "PPOIS LAB/LAB1"
           g++ -std=c++17 -Wall -Wextra -pedantic main.cpp set.cpp "VECTOR 3D.cpp" -o lab1
