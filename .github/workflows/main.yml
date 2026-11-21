@@ -21,12 +21,13 @@ jobs:
           sudo apt-get update
           sudo apt-get install -y doxygen graphviz cmake g++
 
-      - name: Build project and tests
-        run: |
-          cd "PPOIS LAB/LAB1"
-          cmake -S . -B build
-          cmake --build build --parallel
-
+     - name: Build project and tests
+  run: |
+    pwd
+    ls -la
+    find . -name CMakeLists.txt
+    cmake -S "PPOIS LAB/LAB1" -B build
+    cmake --build build --parallel
       - name: Run GoogleTest
         run: |
           cd "PPOIS LAB/LAB1"
