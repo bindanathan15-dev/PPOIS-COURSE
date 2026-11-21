@@ -1,4 +1,4 @@
-name: C++ Build, Tests and Documentation
+name: C++ Build, Tests, Coverage and Documentation
 
 on:
   push:
@@ -19,19 +19,25 @@ jobs:
       - name: Install dependencies
         run: |
           sudo apt-get update
-          sudo apt-get install -y doxygen graphviz cmake g++
+          sudo apt-get install -y doxygen graphviz cmake g++ gcovr
 
       - name: Build project and tests
         run: |
-          pwd
-          ls -la
-          find . -name CMakeLists.txt
-          cmake -S "PPOIS LAB/LAB1" -B "PPOIS LAB/LAB1/build"
-          cmake --build "PPOIS LAB/LAB1/build" --parallel
+          cmake -S "PPOIS LAB/LAB1" -B build
+          cmake --build build --parallel
 
       - name: Run GoogleTest
         run: |
-          ctest --test-dir "PPOIS LAB/LAB1/build" --output-on-failure
+          ctest --test-dir build --output-on-failure
+
+      - name: Measure code coverage
+        run: |
+          gcovr \
+            --root "PPOIS LAB/LAB1" \
+            --object-directory build \
+            --filter '.*(VECTOR 3D|set)\.cpp$' \
+            --print-summary \
+            --fail-under-line 90
 
       - name: Generate Doxygen documentation
         run: |
