@@ -1,4 +1,4 @@
-name: C++ Build and Documentation
+name: C++ Build, Tests and Documentation
 
 on:
   push:
@@ -16,15 +16,21 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Install Doxygen
+      - name: Install dependencies
         run: |
           sudo apt-get update
-          sudo apt-get install -y doxygen graphviz
+          sudo apt-get install -y doxygen graphviz cmake g++
 
-      - name: Compile Vector3D and Set
+      - name: Build project and tests
         run: |
           cd "PPOIS LAB/LAB1"
-          g++ -std=c++17 -Wall -Wextra -pedantic main.cpp set.cpp "VECTOR 3D.cpp" -o lab1
+          cmake -S . -B build
+          cmake --build build --parallel
+
+      - name: Run GoogleTest
+        run: |
+          cd "PPOIS LAB/LAB1"
+          ctest --test-dir build --output-on-failure
 
       - name: Generate Doxygen documentation
         run: |
