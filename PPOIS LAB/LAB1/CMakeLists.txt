@@ -37,7 +37,7 @@ target_link_libraries(Vector3DTests
 
 # Set unit tests
 add_executable(SetTests
-    tests/SetTests.cpp
+    tests/setTests.cpp
     set.cpp
 )
 
