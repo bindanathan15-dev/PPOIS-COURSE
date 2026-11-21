@@ -63,3 +63,11 @@ include(GoogleTest)
 
 gtest_discover_tests(Vector3DTests)
 gtest_discover_tests(SetTests)
+# Enable code coverage for unit tests
+if(CMAKE_CXX_COMPILER_ID STREQUAL "GNU")
+    target_compile_options(Vector3DTests PRIVATE --coverage -O0 -g)
+    target_link_options(Vector3DTests PRIVATE --coverage)
+
+    target_compile_options(SetTests PRIVATE --coverage -O0 -g)
+    target_link_options(SetTests PRIVATE --coverage)
+endif()
