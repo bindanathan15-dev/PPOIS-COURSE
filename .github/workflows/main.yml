@@ -1,0 +1,28 @@
+name: C++ Build
+
+on:
+  push:
+    branches:
+      - feature/lab1-vector-set
+  pull_request:
+    branches:
+      - feature/lab1-vector-set
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Compile Vector3D and Set
+        run: |
+          g++ -std=c++17 -Wall -Wextra -pedantic \
+          "PPOIS LAB/LAB1/Main.cpp" \
+          "PPOIS LAB/LAB1/Set.cpp" \
+          "PPOIS LAB/LAB1/Vector3D.cpp" \
+          -o lab1
+
+      - name: Build successful
+        run: echo "Vector3D and Set compiled successfully!"
