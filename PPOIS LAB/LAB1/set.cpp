@@ -1,14 +1,24 @@
 #include "Set.h"
 #include <sstream>
 #include <algorithm>
+#include <cctype>
 
-// Initializes as an empty subset container
+/**
+ * @brief Initializes an empty subset container.
+ */
 Set::Set() : isSubSet(true), atom("") {}
 
-// Initializes as a simple base atomic element
+/**
+ * @brief Initializes a simple atomic element.
+ * @param singleAtom The string value of the atom.
+ */
 Set::Set(std::string singleAtom) : isSubSet(false), atom(singleAtom) {}
 
-// Internal engine helper to sort and remove redundant items to ensure Cantor set integrity
+/**
+ * @brief Removes duplicate elements from the set.
+ *
+ * Compares elements using their string representations.
+ */
 void Set::removeDuplicates() {
     if (!isSubSet) return;
 
@@ -28,26 +38,38 @@ void Set::removeDuplicates() {
     elements = uniqueElements;
 }
 
-// Checks if the set contains no elements
+/**
+ * @brief Checks whether the set is empty.
+ * @return True if the set contains no elements.
+ */
 bool Set::isEmpty() const {
     if (!isSubSet) return false;
     return elements.empty();
 }
 
-// Returns the count of distinct items inside the container
+/**
+ * @brief Calculates the number of elements in the set.
+ * @return The cardinality of the set.
+ */
 int Set::cardinality() const {
     if (!isSubSet) return 1;
     return elements.size();
 }
 
-// Safely appends an element and triggers the duplicate cleaner
+/**
+ * @brief Adds an element to the set.
+ * @param element The element to add.
+ */
 void Set::addElement(const Set& element) {
-    if (!isSubSet) return; // Atoms cannot contain items
+    if (!isSubSet) return;
     elements.push_back(element);
     removeDuplicates();
 }
 
-// Traverses the container to remove a matching element
+/**
+ * @brief Removes a specific element from the set.
+ * @param element The element to remove.
+ */
 void Set::removeElement(const Set& element) {
     if (!isSubSet) return;
     auto it = std::remove_if(elements.begin(), elements.end(), [&](const Set& e) {
@@ -56,7 +78,11 @@ void Set::removeElement(const Set& element) {
     elements.erase(it, elements.end());
 }
 
-// Indexing Operator Surcharge: Performs an internal search to verify membership
+/**
+ * @brief Checks whether an element belongs to the set.
+ * @param element The element to search for.
+ * @return True if the element is found.
+ */
 bool Set::operator[](const Set& element) const {
     if (!isSubSet) return false;
     for (const auto& elem : elements) {
@@ -65,7 +91,11 @@ bool Set::operator[](const Set& element) const {
     return false;
 }
 
-// Union Surcharge (+): Combines all elements from both containers
+/**
+ * @brief Calculates the union of two sets.
+ * @param other The second set.
+ * @return A new set containing all unique elements.
+ */
 Set Set::operator+(const Set& other) const {
     if (!this->isSubSet || !other.isSubSet) return Set();
     Set result = *this;
@@ -74,28 +104,48 @@ Set Set::operator+(const Set& other) const {
     }
     return result;
 }
+
+/**
+ * @brief Adds another set to the current set.
+ * @param other The set to add.
+ * @return Reference to the modified set.
+ */
 Set& Set::operator+=(const Set& other) {
     *this = *this + other;
     return *this;
 }
 
-// Intersection Surcharge (*): Retains only items present in both sets
+/**
+ * @brief Calculates the intersection of two sets.
+ * @param other The second set.
+ * @return A new set containing common elements.
+ */
 Set Set::operator*(const Set& other) const {
     if (!this->isSubSet || !other.isSubSet) return Set();
     Set result;
     for (const auto& elem : this->elements) {
-        if (other[elem]) { // Reusing our overloaded bracket indexing operator
+        if (other[elem]) {
             result.addElement(elem);
         }
     }
     return result;
 }
+
+/**
+ * @brief Intersects the current set with another set.
+ * @param other The set to intersect with.
+ * @return Reference to the modified set.
+ */
 Set& Set::operator*=(const Set& other) {
     *this = *this * other;
     return *this;
 }
 
-// Difference Surcharge (-): Isolates items unique to Set 1
+/**
+ * @brief Calculates the difference between two sets.
+ * @param other The second set.
+ * @return A new set containing elements not present in the other set.
+ */
 Set Set::operator-(const Set& other) const {
     if (!this->isSubSet || !other.isSubSet) return Set();
     Set result;
@@ -106,12 +156,22 @@ Set Set::operator-(const Set& other) const {
     }
     return result;
 }
+/**
+ * @brief Removes elements belonging to another set.
+ * @param other The set to subtract.
+ * @return Reference to the modified set.
+ */
 Set& Set::operator-=(const Set& other) {
     *this = *this - other;
     return *this;
 }
 
-// Power Set Generator: Uses binary bitshifting (1 << N) to produce all 2^N mathematical subsets
+/**
+ * @brief Generates the power set.
+ *
+ * Uses binary bit shifting to generate all possible subsets.
+ * @return A set containing all possible subsets.
+ */
 Set Set::powerSet() const {
     if (!isSubSet) return Set();
 
@@ -131,27 +191,39 @@ Set Set::powerSet() const {
     return result;
 }
 
-// Recursive Terminal String Parser (Variant 1.4.1 requirement)
+/**
+ * @brief Creates a set from a string representation.
+ *
+ * Parses atoms and nested subsets recursively.
+ * @param str The string representing the set.
+ * @return The constructed set.
+ */
 Set Set::fromString(const std::string& str) {
     std::string s = str;
-    // Strip all whitespaces instantly
-    s.erase(std::remove_if(s.begin(), s.end(), ::isspace), s.end());
+
+    // Remove all whitespace characters.
+    s.erase(std::remove_if(s.begin(), s.end(),
+        [](unsigned char c) { return std::isspace(c); }), s.end());
+
     if (s.empty() || s == "{}") return Set();
-    if (s[0] != '{') return Set(s); // Base case: it is a simple atomic string literal
+
+    // Base case: a simple atomic string.
+    if (s[0] != '{') return Set(s);
 
     Set mainSet;
     std::string current = "";
     int openBraces = 0;
 
-    // Recursive scanning token loop inside boundaries
+    // Scan elements inside the set boundaries.
     for (size_t i = 1; i < s.length() - 1; i++) {
         char ch = s[i];
+
         if (ch == '{') openBraces++;
         if (ch == '}') openBraces--;
 
         if (ch == ',' && openBraces == 0) {
             if (!current.empty()) {
-                mainSet.addElement(Set::fromString(current)); // Recursive call step
+                mainSet.addElement(Set::fromString(current));
                 current = "";
             }
         }
@@ -159,6 +231,7 @@ Set Set::fromString(const std::string& str) {
             current += ch;
         }
     }
+
     if (!current.empty()) {
         mainSet.addElement(Set::fromString(current));
     }
@@ -166,7 +239,12 @@ Set Set::fromString(const std::string& str) {
     return mainSet;
 }
 
-// Recursively builds the string visualization for the standard terminal output window
+/**
+ * @brief Converts the set into a string representation.
+ *
+ * Recursively formats nested sets.
+ * @return The formatted string.
+ */
 std::string Set::toString() const {
     if (!isSubSet) return atom;
     if (elements.empty()) return "{}";
