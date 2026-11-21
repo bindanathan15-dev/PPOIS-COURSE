@@ -58,12 +58,7 @@ target_link_libraries(SetTests
     PRIVATE GTest::gtest_main
 )
 
-# Register tests
-include(GoogleTest)
-
-gtest_discover_tests(Vector3DTests)
-gtest_discover_tests(SetTests)
-# Enable code coverage for unit tests
+# Enable code coverage
 if(CMAKE_CXX_COMPILER_ID STREQUAL "GNU")
     target_compile_options(Vector3DTests PRIVATE --coverage -O0 -g)
     target_link_options(Vector3DTests PRIVATE --coverage)
@@ -71,3 +66,9 @@ if(CMAKE_CXX_COMPILER_ID STREQUAL "GNU")
     target_compile_options(SetTests PRIVATE --coverage -O0 -g)
     target_link_options(SetTests PRIVATE --coverage)
 endif()
+
+# Register tests
+include(GoogleTest)
+
+gtest_discover_tests(Vector3DTests)
+gtest_discover_tests(SetTests)
