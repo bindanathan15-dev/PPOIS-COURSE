@@ -1,0 +1,37 @@
+# Project information
+PROJECT_NAME           = "PPOIS LAB 1 - Vector3D and Set"
+PROJECT_NUMBER         = 1.0
+PROJECT_BRIEF          = "C++ Object-Oriented Programming Laboratory"
+
+# Source code location
+INPUT                  = .
+FILE_PATTERNS          = *.h *.cpp
+RECURSIVE              = NO
+
+# Documentation output
+OUTPUT_DIRECTORY       = documentation
+CREATE_SUBDIRS         = NO
+GENERATE_HTML          = YES
+GENERATE_LATEX         = NO
+
+# Documentation settings
+EXTRACT_ALL            = YES
+EXTRACT_PRIVATE        = YES
+EXTRACT_STATIC         = YES
+OPTIMIZE_OUTPUT_FOR_C  = NO
+JAVADOC_AUTOBRIEF      = YES
+
+# Source browsing
+SOURCE_BROWSER         = YES
+INLINE_SOURCES         = YES
+
+# Warnings
+WARNINGS               = YES
+WARN_IF_UNDOCUMENTED   = YES
+WARN_IF_DOC_ERROR      = YES
+
+# Language
+OUTPUT_LANGUAGE        = English
+
+# HTML settings
+HTML_OUTPUT            = html
