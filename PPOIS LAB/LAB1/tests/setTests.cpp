@@ -1,172 +1,55 @@
-#include <gtest/gtest.h>
 #include "Set.h"
+#include <gtest/gtest.h>
 
-// Test default constructor
-TEST(SetTests, DefaultConstructor) {
-    Set s;
-    EXPECT_TRUE(s.isEmpty());
-    EXPECT_EQ(s.cardinality(), 0);
-    EXPECT_EQ(s.toString(), "{}");
+// Constructors
+
+TEST(SetTests, DefaultConstructorCreatesEmptySet) {
+    Set mySet;
+
+    EXPECT_TRUE(mySet.isEmpty());
+    EXPECT_EQ(mySet.cardinality(), 0);
+    EXPECT_EQ(mySet.toString(), "{}");
 }
 
-// Test atom constructor
 TEST(SetTests, AtomConstructor) {
-    Set s("a");
-    EXPECT_FALSE(s.isEmpty());
-    EXPECT_EQ(s.cardinality(), 1);
-    EXPECT_EQ(s.toString(), "a");
+    Set atom("a");
+
+    EXPECT_FALSE(atom.isEmpty());
+    EXPECT_EQ(atom.cardinality(), 1);
+    EXPECT_EQ(atom.toString(), "a");
 }
 
-// Test adding an element
+// Basic operations
+
 TEST(SetTests, AddElement) {
-    Set s;
-    s.addElement(Set("a"));
-    EXPECT_EQ(s.cardinality(), 1);
-    EXPECT_TRUE(s[Set("a")]);
+    Set mySet;
+
+    mySet.addElement(Set("a"));
+    mySet.addElement(Set("b"));
+
+    EXPECT_EQ(mySet.cardinality(), 2);
+    EXPECT_EQ(mySet.toString(), "{a, b}");
 }
 
-// Test duplicate prevention
 TEST(SetTests, PreventDuplicates) {
-    Set s;
-    s.addElement(Set("a"));
-    s.addElement(Set("a"));
-    EXPECT_EQ(s.cardinality(), 1);
+    Set mySet;
+
+    mySet.addElement(Set("a"));
+    mySet.addElement(Set("a"));
+
+    EXPECT_EQ(mySet.cardinality(), 1);
+    EXPECT_EQ(mySet.toString(), "{a}");
 }
 
-// Test removing an element
-TEST(SetTests, RemoveElement) {
-    Set s;
-    s.addElement(Set("a"));
-    s.addElement(Set("b"));
-    s.removeElement(Set("a"));
+TEST(SetTests, AddNestedSet) {
+    Set mySet;
+    Set nested = Set::fromString("{a, b}");
 
-    EXPECT_EQ(s.cardinality(), 1);
-    EXPECT_FALSE(s[Set("a")]);
-    EXPECT_TRUE(s[Set("b")]);
+    mySet.addElement(nested);
+
+    EXPECT_EQ(mySet.toString(), "{{a, b}}");
 }
 
-// Test membership
-TEST(SetTests, Membership) {
-    Set s;
-    s.addElement(Set("a"));
-
-    EXPECT_TRUE(s[Set("a")]);
-    EXPECT_FALSE(s[Set("b")]);
-}
-
-// Test union
-TEST(SetTests, Union) {
-    Set s1 = Set::fromString("{a, b}");
-    Set s2 = Set::fromString("{b, c}");
-
-    Set result = s1 + s2;
-
-    EXPECT_EQ(result.toString(), "{a, b, c}");
-}
-
-// Test intersection
-TEST(SetTests, Intersection) {
-    Set s1 = Set::fromString("{a, b}");
-    Set s2 = Set::fromString("{b, c}");
-
-    Set result = s1 * s2;
-
-    EXPECT_EQ(result.toString(), "{b}");
-}
-
-// Test difference
-TEST(SetTests, Difference) {
-    Set s1 = Set::fromString("{a, b}");
-    Set s2 = Set::fromString("{b}");
-
-    Set result = s1 - s2;
-
-    EXPECT_EQ(result.toString(), "{a}");
-}
-
-// Test union assignment
-TEST(SetTests, UnionAssignment) {
-    Set s = Set::fromString("{a}");
-    s += Set::fromString("{b}");
-
-    EXPECT_EQ(s.toString(), "{a, b}");
-}
-
-// Test intersection assignment
-TEST(SetTests, IntersectionAssignment) {
-    Set s = Set::fromString("{a, b}");
-    s *= Set::fromString("{b, c}");
-
-    EXPECT_EQ(s.toString(), "{b}");
-}
-
-// Test difference assignment
-TEST(SetTests, DifferenceAssignment) {
-    Set s = Set::fromString("{a, b}");
-    s -= Set::fromString("{b}");
-
-    EXPECT_EQ(s.toString(), "{a}");
-}
-
-// Test power set
-TEST(SetTests, PowerSet) {
-    Set s = Set::fromString("{a, b}");
-    Set result = s.powerSet();
-
-    EXPECT_EQ(result.cardinality(), 4);
-    EXPECT_EQ(result.toString(), "{{}, {a}, {b}, {a, b}}");
-}
-
-// Test parsing a simple set
-TEST(SetTests, FromString) {
-    Set s = Set::fromString("{a, b, c}");
-
-    EXPECT_EQ(s.cardinality(), 3);
-    EXPECT_EQ(s.toString(), "{a, b, c}");
-}
-
-// Test parsing nested sets
-TEST(SetTests, NestedSetParsing) {
-    Set s = Set::fromString("{a, {b, c}, {}}");
-
-    EXPECT_EQ(s.cardinality(), 3);
-    EXPECT_EQ(s.toString(), "{a, {b, c}, {}}");
-}
-
-// Test parsing an empty set
-TEST(SetTests, EmptySetParsing) {
-    Set s = Set::fromString("{}");
-
-    EXPECT_TRUE(s.isEmpty());
-    EXPECT_EQ(s.toString(), "{}");
-}
-
-// Test whitespace handling
-TEST(SetTests, WhitespaceParsing) {
-    Set s = Set::fromString("{ a, b }");
-
-    EXPECT_EQ(s.toString(), "{a, b}");
-}
-
-// Test operations with atomic elements
-TEST(SetTests, OperationsWithAtoms) {
-    Set a("a");
-    Set b("b");
-
-    EXPECT_EQ((a + b).toString(), "{}");
-    EXPECT_EQ((a * b).toString(), "{}");
-    EXPECT_EQ((a - b).toString(), "{}");
-}
-
-// Test power set of an empty set
-TEST(SetTests, EmptyPowerSet) {
-    Set s;
-    Set result = s.powerSet();
-
-    EXPECT_EQ(result.cardinality(), 1);
-    EXPECT_EQ(result.toString(), 
-      "{{}}");
-}
 TEST(SetTests, AddElementToAtomDoesNothing) {
     Set atom("a");
 
@@ -176,24 +59,12 @@ TEST(SetTests, AddElementToAtomDoesNothing) {
     EXPECT_EQ(atom.cardinality(), 1);
 }
 
-TEST(SetTests, RemoveElementFromAtomDoesNothing) {
-    Set atom("a");
+TEST(SetTests, RemoveElement) {
+    Set mySet = Set::fromString("{a, b, c}");
 
-    atom.removeElement(Set("a"));
+    mySet.removeElement(Set("b"));
 
-    EXPECT_EQ(atom.toString(), "a");
-}
-
-TEST(SetTests, MembershipInAtomReturnsFalse) {
-    Set atom("a");
-
-    EXPECT_FALSE(atom[Set("a")]);
-}
-
-TEST(SetTests, PowerSetOfAtomIsEmpty) {
-    Set atom("a");
-
-    EXPECT_EQ(atom.powerSet().toString(), "{}");
+    EXPECT_EQ(mySet.toString(), "{a, c}");
 }
 
 TEST(SetTests, RemoveMissingElement) {
@@ -204,34 +75,258 @@ TEST(SetTests, RemoveMissingElement) {
     EXPECT_EQ(mySet.toString(), "{a, b}");
 }
 
-TEST(SetTests, FromStringWithEmptyInput) {
-    Set mySet = Set::fromString("");
+TEST(SetTests, RemoveElementFromAtomDoesNothing) {
+    Set atom("a");
 
-    EXPECT_TRUE(mySet.isEmpty());
+    atom.removeElement(Set("a"));
+
+    EXPECT_EQ(atom.toString(), "a");
 }
 
-TEST(SetTests, FromStringWithSingleAtom) {
-    Set mySet = Set::fromString("hello");
+// Membership
 
-    EXPECT_EQ(mySet.toString(), "hello");
+TEST(SetTests, MembershipReturnsTrue) {
+    Set mySet = Set::fromString("{a, b, c}");
+
+    EXPECT_TRUE(mySet[Set("b")]);
 }
 
-TEST(SetTests, FromStringWithRepeatedCommas) {
-    Set mySet = Set::fromString("{a,,b}");
+TEST(SetTests, MembershipReturnsFalse) {
+    Set mySet = Set::fromString("{a, b}");
 
-    EXPECT_EQ(mySet.toString(), "{a, b}");
+    EXPECT_FALSE(mySet[Set("c")]);
 }
 
-TEST(SetTests, OperationsWithAtomsReturnEmptySet) {
+TEST(SetTests, MembershipInEmptySetReturnsFalse) {
+    Set mySet;
+
+    EXPECT_FALSE(mySet[Set("a")]);
+}
+
+TEST(SetTests, MembershipInAtomReturnsFalse) {
+    Set atom("a");
+
+    EXPECT_FALSE(atom[Set("a")]);
+}
+
+// Union
+
+TEST(SetTests, Union) {
+    Set first = Set::fromString("{a, b}");
+    Set second = Set::fromString("{b, c}");
+
+    EXPECT_EQ((first + second).toString(), "{a, b, c}");
+}
+
+TEST(SetTests, UnionWithEmptySet) {
+    Set first = Set::fromString("{a, b}");
+    Set second;
+
+    EXPECT_EQ((first + second).toString(), "{a, b}");
+}
+
+TEST(SetTests, UnionWithAtomReturnsEmptySet) {
     Set atom("a");
     Set mySet = Set::fromString("{a, b}");
 
     EXPECT_EQ((atom + mySet).toString(), "{}");
     EXPECT_EQ((mySet + atom).toString(), "{}");
+    EXPECT_EQ((atom + atom).toString(), "{}");
+}
+
+TEST(SetTests, UnionAssignment) {
+    Set first = Set::fromString("{a, b}");
+    Set second = Set::fromString("{b, c}");
+
+    first += second;
+
+    EXPECT_EQ(first.toString(), "{a, b, c}");
+}
+
+TEST(SetTests, UnionAssignmentWithAtom) {
+    Set atom("a");
+    Set mySet = Set::fromString("{b}");
+
+    atom += mySet;
+
+    EXPECT_EQ(atom.toString(), "{}");
+}
+
+// Intersection
+
+TEST(SetTests, Intersection) {
+    Set first = Set::fromString("{a, b, c}");
+    Set second = Set::fromString("{b, c, d}");
+
+    EXPECT_EQ((first * second).toString(), "{b, c}");
+}
+
+TEST(SetTests, IntersectionWithoutCommonElements) {
+    Set first = Set::fromString("{a, b}");
+    Set second = Set::fromString("{c, d}");
+
+    EXPECT_EQ((first * second).toString(), "{}");
+}
+
+TEST(SetTests, IntersectionWithAtomReturnsEmptySet) {
+    Set atom("a");
+    Set mySet = Set::fromString("{a, b}");
 
     EXPECT_EQ((atom * mySet).toString(), "{}");
     EXPECT_EQ((mySet * atom).toString(), "{}");
+}
+
+TEST(SetTests, IntersectionAssignment) {
+    Set first = Set::fromString("{a, b, c}");
+    Set second = Set::fromString("{b, c}");
+
+    first *= second;
+
+    EXPECT_EQ(first.toString(), "{b, c}");
+}
+
+TEST(SetTests, IntersectionAssignmentWithAtom) {
+    Set atom("a");
+    Set mySet = Set::fromString("{a, b}");
+
+    atom *= mySet;
+
+    EXPECT_EQ(atom.toString(), "{}");
+}
+
+// Difference
+TEST(SetTests, Difference) {
+    Set first = Set::fromString("{a, b, c}");
+    Set second = Set::fromString("{b}");
+
+    EXPECT_EQ((first - second).toString(), "{a, c}");
+}
+
+TEST(SetTests, DifferenceWithoutCommonElements) {
+    Set first = Set::fromString("{a, b}");
+    Set second = Set::fromString("{c, d}");
+
+    EXPECT_EQ((first - second).toString(), "{a, b}");
+}
+
+TEST(SetTests, DifferenceWithAtomReturnsEmptySet) {
+    Set atom("a");
+    Set mySet = Set::fromString("{a, b}");
 
     EXPECT_EQ((atom - mySet).toString(), "{}");
     EXPECT_EQ((mySet - atom).toString(), "{}");
+}
+
+TEST(SetTests, DifferenceAssignment) {
+    Set first = Set::fromString("{a, b, c}");
+    Set second = Set::fromString("{b}");
+
+    first -= second;
+
+    EXPECT_EQ(first.toString(), "{a, c}");
+}
+
+TEST(SetTests, DifferenceAssignmentWithAtom) {
+    Set atom("a");
+    Set mySet = Set::fromString("{a, b}");
+
+    atom -= mySet;
+
+    EXPECT_EQ(atom.toString(), "{}");
+}
+
+// Power set
+
+TEST(SetTests, PowerSetOfEmptySet) {
+    Set mySet;
+
+    EXPECT_EQ(mySet.powerSet().toString(), "{{}}");
+}
+
+TEST(SetTests, PowerSetOfOneElement) {
+    Set mySet = Set::fromString("{a}");
+
+    EXPECT_EQ(mySet.powerSet().cardinality(), 2);
+    EXPECT_EQ(mySet.powerSet().toString(), "{{}, {a}}");
+}
+
+TEST(SetTests, PowerSetOfTwoElements) {
+    Set mySet = Set::fromString("{a, b}");
+
+    EXPECT_EQ(mySet.powerSet().cardinality(), 4);
+    EXPECT_EQ(
+        mySet.powerSet().toString(),
+        "{{}, {a}, {b}, {a, b}}"
+    );
+}
+
+TEST(SetTests, PowerSetOfAtomIsEmpty) {
+    Set atom("a");
+
+    EXPECT_EQ(atom.powerSet().toString(), "{}");
+}
+
+// String conversion
+
+TEST(SetTests, FromStringEmptySet) {
+    Set mySet = Set::fromString("{}");
+
+    EXPECT_TRUE(mySet.isEmpty());
+    EXPECT_EQ(mySet.toString(), "{}");
+}
+
+TEST(SetTests, FromStringEmptyInput) {
+    Set mySet = Set::fromString("");
+
+    EXPECT_TRUE(mySet.isEmpty());
+}
+
+TEST(SetTests, FromStringSingleAtom) {
+    Set mySet = Set::fromString("hello");
+
+    EXPECT_EQ(mySet.toString(), "hello");
+}
+
+TEST(SetTests, FromStringSimpleSet) {
+    Set mySet = Set::fromString("{a, b, c}");
+
+    EXPECT_EQ(mySet.toString(), "{a, b, c}");
+}
+
+TEST(SetTests, FromStringWithSpaces) {
+    Set mySet = Set::fromString("{ a , b , c }");
+
+    EXPECT_EQ(mySet.toString(), "{a, b, c}");
+}
+
+TEST(SetTests, FromStringNestedSet) {
+    Set mySet = Set::fromString("{a, {b, c}, d}");
+
+    EXPECT_EQ(mySet.toString(), "{a, {b, c}, d}");
+}
+
+TEST(SetTests, FromStringDeeplyNestedSet) {
+    Set mySet = Set::fromString("{a, {b, {c}}}");
+
+    EXPECT_EQ(mySet.toString(), "{a, {b, {c}}}");
+}
+
+// Final string representation
+
+TEST(SetTests, ToStringEmptySet) {
+    Set mySet;
+
+    EXPECT_EQ(mySet.toString(), "{}");
+}
+
+TEST(SetTests, ToStringAtom) {
+    Set atom("hello");
+
+    EXPECT_EQ(atom.toString(), "hello");
+}
+
+TEST(SetTests, ToStringMultipleElements) {
+    Set mySet = Set::fromString("{a, b, c}");
+
+    EXPECT_EQ(mySet.toString(), "{a, b, c}");
 }
