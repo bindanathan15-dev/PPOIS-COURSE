@@ -167,3 +167,71 @@ TEST(SetTests, EmptyPowerSet) {
     EXPECT_EQ(result.toString(), 
       "{{}}");
 }
+TEST(SetTests, AddElementToAtomDoesNothing) {
+    Set atom("a");
+
+    atom.addElement(Set("b"));
+
+    EXPECT_EQ(atom.toString(), "a");
+    EXPECT_EQ(atom.cardinality(), 1);
+}
+
+TEST(SetTests, RemoveElementFromAtomDoesNothing) {
+    Set atom("a");
+
+    atom.removeElement(Set("a"));
+
+    EXPECT_EQ(atom.toString(), "a");
+}
+
+TEST(SetTests, MembershipInAtomReturnsFalse) {
+    Set atom("a");
+
+    EXPECT_FALSE(atom[Set("a")]);
+}
+
+TEST(SetTests, PowerSetOfAtomIsEmpty) {
+    Set atom("a");
+
+    EXPECT_EQ(atom.powerSet().toString(), "{}");
+}
+
+TEST(SetTests, RemoveMissingElement) {
+    Set mySet = Set::fromString("{a, b}");
+
+    mySet.removeElement(Set("c"));
+
+    EXPECT_EQ(mySet.toString(), "{a, b}");
+}
+
+TEST(SetTests, FromStringWithEmptyInput) {
+    Set mySet = Set::fromString("");
+
+    EXPECT_TRUE(mySet.isEmpty());
+}
+
+TEST(SetTests, FromStringWithSingleAtom) {
+    Set mySet = Set::fromString("hello");
+
+    EXPECT_EQ(mySet.toString(), "hello");
+}
+
+TEST(SetTests, FromStringWithRepeatedCommas) {
+    Set mySet = Set::fromString("{a,,b}");
+
+    EXPECT_EQ(mySet.toString(), "{a, b}");
+}
+
+TEST(SetTests, OperationsWithAtomsReturnEmptySet) {
+    Set atom("a");
+    Set mySet = Set::fromString("{a, b}");
+
+    EXPECT_EQ((atom + mySet).toString(), "{}");
+    EXPECT_EQ((mySet + atom).toString(), "{}");
+
+    EXPECT_EQ((atom * mySet).toString(), "{}");
+    EXPECT_EQ((mySet * atom).toString(), "{}");
+
+    EXPECT_EQ((atom - mySet).toString(), "{}");
+    EXPECT_EQ((mySet - atom).toString(), "{}");
+}
