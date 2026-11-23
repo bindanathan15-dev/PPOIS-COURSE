@@ -151,3 +151,13 @@ TEST(Vector3DTests, ComparisonOperators) {
     EXPECT_TRUE(v1 >= v3);
     EXPECT_TRUE(v1 <= v3);
 }
+TEST(Vector3DTests, ComparisonOperatorsFalseCases) {
+    Vector3D shorter(1, 0, 0);
+    Vector3D longer(2, 0, 0);
+
+    EXPECT_FALSE(shorter > longer);
+    EXPECT_FALSE(shorter >= longer);
+    EXPECT_FALSE(longer < shorter);
+    EXPECT_FALSE(longer <= shorter);
+}
+
