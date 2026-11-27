@@ -38,26 +38,49 @@ jobs:
             --filter '.*(VECTOR 3D|set)\.cpp$' \
             --print-summary \
             --json-summary coverage-summary.json \
-            --html-details coverage.html \
-            --fail-under-line 90
+            --html-details coverage.html
 
           python3 - <<'PY'
           import json
-          import math
           import os
+          import sys
 
-          with open("coverage-summary.json") as f:
-              data = json.load(f)
+          with open("coverage-summary.json") as file:
+              data = json.load(file)
 
           percent = data["line_percent"]
-          filled = round(percent / 5)
+          covered = data["lines_covered"]
+          total = data["lines"]
+
+          filled = max(0, min(20, round(percent / 5)))
           bar = "🟩" * filled + "⬜" * (20 - filled)
 
-          with open(os.environ["GITHUB_STEP_SUMMARY"], "a") as f:
-              f.write("# 🟩 LINE COVERAGE\n\n")
-              f.write(f"# {percent:.1f}%\n\n")
-              f.write(f"### {bar}\n\n")
-              f.write(f"Covered lines: {data['lines_covered']} / {data['lines']}\n")
+          if percent >= 90:
+              status = "🟢 COVERAGE PASSED"
+          else:
+              status = "🔴 COVERAGE BELOW 90%"
+
+          summary = f"""
+          # {status}
+
+          # 🟩 LINE COVERAGE
+
+          # {percent:.1f}%
+
+          ### {bar}
+
+          Covered lines: {covered} / {total}
+
+          Required coverage: 90%
+          """
+
+          with open(os.environ["GITHUB_STEP_SUMMARY"], "a") as file:
+              file.write(summary)
+
+          print(summary)
+
+          if percent < 90:
+              sys.exit(1)
           PY
 
       - name: Upload coverage report
@@ -65,7 +88,10 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: Coverage-Report
-          path: coverage*
+          path: |
+            coverage*
+            coverage-summary.json
+          if-no-files-found: warn
 
       - name: Generate Doxygen documentation
         run: |
