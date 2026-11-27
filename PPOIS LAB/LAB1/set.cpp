@@ -20,8 +20,6 @@ Set::Set(std::string singleAtom) : isSubSet(false), atom(singleAtom) {}
  * Compares elements using their string representations.
  */
 void Set::removeDuplicates() {
-    if (!isSubSet) return;
-
     std::vector<Set> uniqueElements;
     for (const auto& elem : elements) {
         bool found = false;
