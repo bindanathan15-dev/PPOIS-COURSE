@@ -32,17 +32,33 @@ jobs:
 
       - name: Measure code coverage
         run: |
-          set -o pipefail
           gcovr \
             --root "PPOIS LAB/LAB1" \
             --object-directory build \
             --filter '.*(VECTOR 3D|set)\.cpp$' \
             --print-summary \
+            --json-summary coverage-summary.json \
             --html-details coverage.html \
-            --fail-under-line 90 | tee coverage-summary.txt
+            --fail-under-line 90
 
-          echo "## Code Coverage" >> "$GITHUB_STEP_SUMMARY"
-          cat coverage-summary.txt >> "$GITHUB_STEP_SUMMARY"
+          python3 - <<'PY'
+          import json
+          import math
+          import os
+
+          with open("coverage-summary.json") as f:
+              data = json.load(f)
+
+          percent = data["line_percent"]
+          filled = round(percent / 5)
+          bar = "🟩" * filled + "⬜" * (20 - filled)
+
+          with open(os.environ["GITHUB_STEP_SUMMARY"], "a") as f:
+              f.write("# 🟩 LINE COVERAGE\n\n")
+              f.write(f"# {percent:.1f}%\n\n")
+              f.write(f"### {bar}\n\n")
+              f.write(f"Covered lines: {data['lines_covered']} / {data['lines']}\n")
+          PY
 
       - name: Upload coverage report
         if: always()
