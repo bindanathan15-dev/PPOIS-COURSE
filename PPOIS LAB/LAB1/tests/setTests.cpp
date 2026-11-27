@@ -549,3 +549,38 @@ TEST(SetTests, ToStringNestedSet) {
 
     EXPECT_EQ(s.toString(), "{a, {b, c}}");
 }
+// Your existing tests above
+
+TEST(SetTests, RemoveDuplicatesWithDifferentElements) {
+    Set set;
+
+    set.addElement(Set("a"));
+    set.addElement(Set("b"));
+    set.addElement(Set("c"));
+
+    EXPECT_EQ(set.cardinality(), 3);
+    EXPECT_EQ(set.toString(), "{a, b, c}");
+}
+
+TEST(SetTests, RemoveDuplicatesWithRepeatedElements) {
+    Set set;
+
+    set.addElement(Set("a"));
+    set.addElement(Set("b"));
+    set.addElement(Set("a"));
+    set.addElement(Set("c"));
+    set.addElement(Set("b"));
+
+    EXPECT_EQ(set.cardinality(), 3);
+    EXPECT_EQ(set.toString(), "{a, b, c}");
+}
+
+TEST(SetTests, RemoveDuplicatesWithNestedSets) {
+    Set set;
+
+    set.addElement(Set::fromString("{a, b}"));
+    set.addElement(Set::fromString("{c, d}"));
+    set.addElement(Set::fromString("{a, b}"));
+
+    EXPECT_EQ(set.cardinality(), 2);
+}
