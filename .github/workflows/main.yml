@@ -49,8 +49,8 @@ jobs:
               data = json.load(file)
 
           percent = data["line_percent"]
-          covered = data["lines_covered"]
           total = data["lines"]
+          covered = round(total * percent / 100)
 
           filled = max(0, min(20, round(percent / 5)))
           bar = "🟩" * filled + "⬜" * (20 - filled)
