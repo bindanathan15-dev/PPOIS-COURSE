@@ -635,3 +635,38 @@ TEST(SetTests, UnionWithTwoAtomicElements) {
 
     EXPECT_TRUE(result.isEmpty());
 }
+TEST(SetTests, DifferenceWithAtomicElementOnLeft) {
+    Set atom("a");
+    Set s = Set::fromString("{a, b}");
+
+    Set result = atom - s;
+
+    EXPECT_TRUE(result.isEmpty());
+}
+
+TEST(SetTests, DifferenceWithAtomicElementOnRight) {
+    Set s = Set::fromString("{a, b, c}");
+    Set atom("b");
+
+    Set result = s - atom;
+
+    EXPECT_TRUE(result.isEmpty());
+}
+
+TEST(SetTests, DifferenceWithTwoAtomicElements) {
+    Set first("a");
+    Set second("b");
+
+    Set result = first - second;
+
+    EXPECT_TRUE(result.isEmpty());
+}
+
+TEST(SetTests, DifferenceWithNoCommonElements) {
+    Set first = Set::fromString("{a, b}");
+    Set second = Set::fromString("{c, d}");
+
+    Set result = first - second;
+
+    EXPECT_EQ(result.toString(), "{a, b}");
+}
