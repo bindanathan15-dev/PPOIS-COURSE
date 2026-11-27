@@ -37,8 +37,7 @@ jobs:
             --object-directory build \
             --filter '.*(VECTOR 3D|set)\.cpp$' \
             --print-summary \
-            --branches \
-            --verbose \
+            --markdown-summary "$GITHUB_STEP_SUMMARY" \
             --html-details coverage.html \
             --fail-under-line 90
 
