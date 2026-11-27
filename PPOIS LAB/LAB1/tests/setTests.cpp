@@ -584,3 +584,54 @@ TEST(SetTests, RemoveDuplicatesWithNestedSets) {
 
     EXPECT_EQ(set.cardinality(), 2);
 }
+TEST(SetTests, RemoveElementWhenElementDoesNotExist) {
+    Set s = Set::fromString("{a, b, c}");
+
+    s.removeElement(Set("x"));
+
+    EXPECT_EQ(s.cardinality(), 3);
+    EXPECT_EQ(s.toString(), "{a, b, c}");
+}
+
+TEST(SetTests, RemoveElementFromEmptySet) {
+    Set s;
+
+    s.removeElement(Set("a"));
+
+    EXPECT_TRUE(s.isEmpty());
+}
+
+TEST(SetTests, MembershipWithDifferentElements) {
+    Set s = Set::fromString("{a, b, c}");
+
+    EXPECT_TRUE(s[Set("a")]);
+    EXPECT_FALSE(s[Set("x")]);
+    EXPECT_FALSE(s[Set("z")]);
+}
+
+TEST(SetTests, UnionWithAtomicElementOnLeft) {
+    Set atom("a");
+    Set s = Set::fromString("{b, c}");
+
+    Set result = atom + s;
+
+    EXPECT_TRUE(result.isEmpty());
+}
+
+TEST(SetTests, UnionWithAtomicElementOnRight) {
+    Set s = Set::fromString("{a, b}");
+    Set atom("c");
+
+    Set result = s + atom;
+
+    EXPECT_TRUE(result.isEmpty());
+}
+
+TEST(SetTests, UnionWithTwoAtomicElements) {
+    Set first("a");
+    Set second("b");
+
+    Set result = first + second;
+
+    EXPECT_TRUE(result.isEmpty());
+}
