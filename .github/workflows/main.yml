@@ -32,14 +32,17 @@ jobs:
 
       - name: Measure code coverage
         run: |
+          set -o pipefail
           gcovr \
             --root "PPOIS LAB/LAB1" \
             --object-directory build \
             --filter '.*(VECTOR 3D|set)\.cpp$' \
             --print-summary \
-            --markdown-summary "$GITHUB_STEP_SUMMARY" \
             --html-details coverage.html \
-            --fail-under-line 90
+            --fail-under-line 90 | tee coverage-summary.txt
+
+          echo "## Code Coverage" >> "$GITHUB_STEP_SUMMARY"
+          cat coverage-summary.txt >> "$GITHUB_STEP_SUMMARY"
 
       - name: Upload coverage report
         if: always()
